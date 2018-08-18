@@ -1,0 +1,10 @@
+click==6.7
+Flask==1.0.2
+itsdangerous==0.24
+Jinja2==2.10
+MarkupSafe==1.0
+numpy==1.14.4
+opencv-python==3.4.1.15
+pigpio==1.40.post1
+pkg-resources==0.0.0
+Werkzeug==0.14.1
