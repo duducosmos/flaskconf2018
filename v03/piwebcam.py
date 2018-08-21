@@ -28,6 +28,7 @@ with python-opencv
 import cv2
 from threading import Thread 
 
+
 class PiWebcam(Thread):
     '''
     Capture webcam images using Python-Opencv.

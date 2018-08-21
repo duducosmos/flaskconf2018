@@ -1,3 +1,7 @@
+'''
+Developed by: Eduardo S. Pereira
+Based on : https://www.learnopencv.com/deep-learning-object-detection-using-yolo-v3-with-opencv-python-c/
+'''
 import cv2
 import numpy as np
 
@@ -7,8 +11,8 @@ class YoloModel:
     def __init__(self, confThreshold=0.5, nmsThreshold=0.4,
                  inpWidth=320, inpHeight=320,
                  classeFile='coco.names',
-                 modelConfiguration='yolov3.cfg',
-                 modelWeights="yolov3.weights"):
+                 modelConfiguration='yolov3-tiny.cfg',
+                 modelWeights="yolov3-tiny.weights"):
         self.confThreshold = confThreshold
         self.nmsThreshold = nmsThreshold
         self.inpWidth = inpWidth
@@ -61,7 +65,14 @@ class YoloModel:
 
     def _draw_prediction(self, frame, classId, confidence,
                          left, top, right, bottom):
-        cv2.rectangle(frame, (left,top), (right, bottom), (0,0,255))
+        cv2.rectangle(frame, (left,top), (right, bottom), (255,0,255), 5)
+        label = "%2.f" % confidence
+        if self.classes:
+            assert(classId < len(self.classes))
+            label = "{0}: {1}".format(self.classes[classId], label)
+        labelSize, baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+        top = max(top, labelSize[1])
+        cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
 
 
 
@@ -78,8 +89,8 @@ class YoloModel:
         boxes = []
         for out in outputs:
             for detection in out:
-                score = detection[5:]
-                classId = np.argmax(score)
+                scores = detection[5:]
+                classId = np.argmax(scores)
                 confidence = scores[classId]
                 if(confidence > self.confThreshold):
                     center_x = int(detection[0]*frameWidth)
@@ -102,7 +113,7 @@ if __name__ == "__main__":
 
     while cv2.waitKey(1) < 0:
         hasframe, frame =  cap.read()
-        if not hasFrame:
+        if not hasframe:
             cv2.destroyAllWindows()
             cv2.waitKey(3000)
             break

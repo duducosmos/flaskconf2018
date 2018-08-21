@@ -5,6 +5,8 @@ from facedetection import facedetection
 from numpy import array
 from camserver import piwebcam
 from servo import Servo
+from yolomodel import YoloModel
+
 
 app = Flask(__name__, static_url_path = "", static_folder = "static" )
 
@@ -12,6 +14,7 @@ app.secret_key = 'X456yhj3k510oq'
 
 servobase = Servo(27)
 servoaltura = Servo(17)
+yolomodel = YoloModel()
 
 @app.route("/arm", methods=["GET"])
 def move_arm():
@@ -46,11 +49,12 @@ def gen():
         frame  = piwebcam.get_image()
        
         if frame is not None:
-            faces = facedetection(piwebcam.get_gray())
-            faces = ((x, y, w, h, (255, 0, 0), 2) for (x, y, w, h) in faces)
-            for (x, y, w, h, rgb, linewidth) in faces:
-                cv2.rectangle(frame, (x, y), (x + w, y + h),
-                              rgb, linewidth)
+            #faces = facedetection(piwebcam.get_gray())
+            #faces = ((x, y, w, h, (255, 0, 0), 2) for (x, y, w, h) in faces)
+            #for (x, y, w, h, rgb, linewidth) in faces:
+            #    cv2.rectangle(frame, (x, y), (x + w, y + h),
+            #                  rgb, linewidth)
+            yolomodel.draw_prediction(frame)
             frame = cv2.imencode('.jpg',frame)[1].tostring()
         else:
             frame = b''
