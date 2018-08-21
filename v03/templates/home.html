@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<script >
+    var angbase = 90;
+
+    var angup = 90;
+
+    function movebase(){
+        if(angbase >= 180){
+            angbase = 180;
+        }
+
+        if(angbase <= 0){
+            angbase = 0;
+        }
+
+        if(angup >= 180){
+            angup = 180;
+        }
+
+        if(angup <= 0 ){
+            angup = 0;
+        }
+
+        $.getJSON("{{url_for('move_arm')}}", 
+                  {anglebase: angbase, angup:angup}, 
+                  function(data){
+                      text = "<p>&mu;<sub>up</sub> = " + data.up 
+                             + "; &mu;<sub>cud</sub> = " + data.center_ud
+                             + "; &mu;<sub>dn</sub> = " + data.down 
+                             + "; &mu;<sub>lt</sub> = " + data.left 
+                             + "; &mu;<sub>clr</sub> = " + data.center_lr 
+                             + "; &mu;<sub>rt</sub> = " + data.right 
+                             +  "</p>";
+                      fdiv = document.getElementById("fuzzyinfo");
+                      fdiv.style.fontSize="25px";
+                      fdiv.innerHTML = text;
+
+                  });
+        return false;
+    }
+
+    
+
+    function base_left(){
+        angbase = angbase - 10;
+        movebase();
+    }
+
+    function base_right(){
+        angbase = angbase + 10;
+        movebase();
+    }
+
+    function arm_up(){
+        angup = angup - 5;
+        movebase();
+    }
+
+    function arm_down(){
+        angup = angup + 5;
+        movebase();
+    }
+
+
+</script>
+
+<div class="row">
+    <div class="col s12 center-align">
+        <img class="responsive-img" src="{{url_for('video_feed')}}" />
+    </div>
+</div>
+</div>
+
+<div class="row">
+    <div class="col s12 center-align">
+        <button type = "submit" onclick="arm_up()">
+            <img class="responsive-img" src="{{ url_for('static', filename = 'images/Sprites/flatDark/flatDark25.png') }}" width=100, height=100 />
+        </button>
+    </div>
+    <div class="col s6 center-align">
+        <button type = "submit" onclick="base_left()">
+            <img class="responsive-img" src="{{ url_for('static', filename = 'images/Sprites/flatDark/flatDark23.png') }}" width=100, height=100 />
+        </button>
+    </div>
+    <div class="col s6 center-align">
+        <button type = "submit" onclick="base_right()">
+        <img class="responsive-img" src="{{ url_for('static', filename = 'images/Sprites/flatDark/flatDark24.png') }}" width=100, height=100 />
+        </button>
+    </div>
+    <div class="col s12 center-align" onclick="arm_down()">
+        <button type = "submit" >
+            <img class="responsive-img" src="{{ url_for('static', filename = 'images/Sprites/flatDark/flatDark26.png') }}" width=100, height=100 />
+        </button>
+    </div>  
+
+{% endblock %}
