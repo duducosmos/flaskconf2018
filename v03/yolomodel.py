@@ -24,7 +24,7 @@ class YoloModel:
         self.boxes = []
 
         self.classeFile = classeFile
-        self.classes = self._loadClassesNames() 
+        self.classes = self._loadClassesNames()
         self.modelConfiguration = modelConfiguration
         self.modelWeights = modelWeights
         self._loadNet()
@@ -35,20 +35,20 @@ class YoloModel:
         return classes
 
     def _loadNet(self):
-        self.net = cv2.dnn.readNetFromDarknet(self.modelConfiguration, 
+        self.net = cv2.dnn.readNetFromDarknet(self.modelConfiguration,
                                               self.modelWeights)
         self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
         self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 
     def process_frame(self, frame):
-        blob = cv2.dnn.blobFromImage(frame, 1/255, 
+        blob = cv2.dnn.blobFromImage(frame, 1/255,
                                      (self.inpWidth, self.inpHeight),
                                      [0,0,0], 1, crop=False
                                      )
         self.net.setInput(blob)
         outputs = self.net.forward(self.get_outputs_names())
-        self.indices, self.classIds, self.confidences, self.boxes = self.post_process(frame, 
-                                                                                      outputs) 
+        self.indices, self.classIds, self.confidences, self.boxes = self.post_process(frame,
+                                                                                      outputs)
 
     def draw_prediction(self, frame):
         self.process_frame(frame)
@@ -123,4 +123,3 @@ if __name__ == "__main__":
         if cv2.waitKey(1) == 27:
             cv2.destroyAllWindows()
             break
-
